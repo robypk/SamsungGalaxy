@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 33bd55689c76c0642be18ebfa8d256e9
+  m_SerializeEntries:
+  - m_GUID: 0c3eaac0d4504534a838f5045473b8f6
+    m_Address: Card
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: b0948aa9c266b3b419e5eca9736f4554
+    m_Address: S20
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Cards
+  - m_GUID: fa07437a4a1a9d14c9f606e8850be7fa
+    m_Address: S21
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Cards
+  - m_GUID: 43f98de4f5d0a2d4b8988002829808d1
+    m_Address: S22
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Cards
+  - m_GUID: 9d70baf3268ef0a4ea151d8602833900
+    m_Address: S23
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Cards
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 15a4492f80a4de347b5b01f6c47dd1ca, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 01788e8fd5e325b4ea448df3da335813, type: 2}
+    - {fileID: 11400000, guid: 1ff5e70d2177e6d4abc7a70dca49dc87, type: 2}
