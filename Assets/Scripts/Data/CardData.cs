@@ -6,8 +6,8 @@ using UnityEngine;
 )]
 public class CardData : ScriptableObject
 {
-    [SerializeField] private string cardName;
+    [SerializeField] private int cardId;
     [SerializeField] private Sprite cardImage;
-    public string CardName => cardName;
+    public int CardId => cardId;
     public Sprite CardImage => cardImage;
 }
