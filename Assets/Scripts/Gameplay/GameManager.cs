@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] int totalLevles;
     [SerializeField] GameObject mainMenu;
     [SerializeField] GameObject gamePlayUI;
+    [SerializeField] GameObject congratzUI;
     [SerializeField] TMP_Text scoreText;
     [SerializeField] TMP_Text turnText;
     [SerializeField] TMP_Text selectedLevelText;
@@ -30,7 +31,7 @@ public class GameManager : MonoBehaviour
 
 
 
-    public async UniTaskVoid Start( )
+    public async UniTaskVoid Start()
     {
         await InitializeGameAsync();
         Services.Get<EventService>().CardClick += onCardClick;
@@ -61,8 +62,9 @@ public class GameManager : MonoBehaviour
             Services.Get<AudioService>().PlayCorrect();
             if (currentScore == currentlevel)
             {
-                await UniTask.Delay(2000);
+                congratzUI.SetActive(true);
                 Services.Get<AudioService>().PlayLevelComplete();
+                await UniTask.Delay(2000);
                 Services.Get<EventService>().LevelComplete?.Invoke();
                 mainMenu.SetActive(true);
                 gamePlayUI.SetActive(false);
@@ -80,18 +82,18 @@ public class GameManager : MonoBehaviour
         currentTurn++;
         turnText.text = currentTurn.ToString();
     }
-    public void hitButtonClick() 
-    {  
+    public void hitButtonClick()
+    {
         Services.Get<EventService>().HintRequested?.Invoke();
     }
 
-    public async UniTask InitializeGameAsync( )
+    public async UniTask InitializeGameAsync()
     {
         await PrepareLevelsAndCards();
         Services.Get<LoadingService>().HideLoadingScreen();
     }
 
-    private async UniTask PrepareLevelsAndCards( )
+    private async UniTask PrepareLevelsAndCards()
     {
         var token = this.GetCancellationTokenOnDestroy();
         Services.Get<LoadingService>().ShowLoadingScreen();
@@ -106,7 +108,7 @@ public class GameManager : MonoBehaviour
             levelButton.GetComponentInChildren<TMP_Text>().text = i.ToString();
             levelButton.onClick.AddListener(() =>
             {
-                currentLevelCards = levelIndex *2;
+                currentLevelCards = levelIndex * 2;
                 cardSpawner.SetCurrentLevel(currentLevelCards);
                 currentlevel = levelIndex;
                 selectedLevelText.text = levelIndex.ToString();
@@ -123,13 +125,14 @@ public class GameManager : MonoBehaviour
     private async UniTask LoadCardPackAsync(CancellationToken token)
     {
         var result = await Addressables.LoadAssetsAsync<CardData>(cardsAddressableLabel, null).ToUniTask(cancellationToken: token);
-        cardSpawner.LoadAllCards( new List<CardData>(result));
+        cardSpawner.LoadAllCards(new List<CardData>(result));
     }
 
 
-    public void StartGame( )
+    public void StartGame()
     {
         mainMenu.SetActive(false);
+        congratzUI.SetActive(false);
         gamePlayUI.SetActive(true);
         cardSpawner.StartCardSpawning();
         currentScore = 0;
@@ -138,4 +141,33 @@ public class GameManager : MonoBehaviour
         turnText.text = currentTurn.ToString();
     }
 
+
+
+    public void GotoHome()
+    {
+        Services.Get<EventService>().LevelComplete?.Invoke();
+        mainMenu.SetActive(true);
+        gamePlayUI.SetActive(false);
+        congratzUI.SetActive(false);
+
+
+
+    }
+
+
+    public void GameQuit()
+    {
+        Services.Unregister<AudioService>();
+        Services.Unregister<LoadingService>();
+        Services.Unregister<EventService>();
+        Services.Unregister<SaveService>();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+    Application.Quit();
+#endif
+    }
+
 }
+
+
