@@ -4,27 +4,29 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 public class CardSpawner : MonoBehaviour
 {
-    string cardPrefabAddressbleName = "Card";
-    string cardsAddressableLabel = "Cards";
-    [SerializeField] TMP_Text loadingText;
 
+    [SerializeField] GridLayoutGroup gridLayoutGroup;
+
+
+    string cardPrefabAddressbleName = "Card";
     private List<CardData> loadedCards = new();
     private CancellationToken token;
+    int CurrentLevelcards;
 
-    private async UniTask CardSpawing()
+
+
+    public void LoadAllCards(List<CardData> cardDatas)
     {
-        loadingText.gameObject.SetActive(true);
-        loadingText.text = "Loading 0%";
+        loadedCards = cardDatas;
+    }
 
-        await LoadCardPackAsync();
-        await SpawnCardsAsync(496);
-
-        loadingText.text = "Loading Complete";
-        await UniTask.Delay(300, cancellationToken: token);
-        loadingText.gameObject.SetActive(false);
+    public void SetCurrentLevel(int level)
+    {
+        CurrentLevelcards = level;
     }
 
     public void StartCardSpawning( )
@@ -32,13 +34,14 @@ public class CardSpawner : MonoBehaviour
         token = this.GetCancellationTokenOnDestroy();
         CardSpawing().Forget();
     }
-    private async UniTask LoadCardPackAsync()
+
+    private async UniTask CardSpawing()
     {
-        var result = await Addressables.LoadAssetsAsync<CardData>(cardsAddressableLabel, null).ToUniTask(cancellationToken: token);
-        loadedCards = new List<CardData>(result);
+        Services.Get<LoadingService>().ShowLoadingScreen();
+        await SpawnCardsAsync(CurrentLevelcards);
+        Services.Get<LoadingService>().UpdateLoadingProgress("Finalizing...");
+        Services.Get<LoadingService>().HideLoadingScreen();
     }
-
-
     private async UniTask<List<CardData>> ShuffleCards(List<CardData> cards)
     {
         List<CardData> shuffled = new List<CardData>(cards);
@@ -59,32 +62,39 @@ public class CardSpawner : MonoBehaviour
     private async UniTask SpawnCardsAsync(int totalCards)
     {
         int pairCount = totalCards / 2;
-
-        loadingText.text = "Loading 10%";
+        Services.Get<LoadingService>().UpdateLoadingProgress("Preparing cards...");
+        PrepareGrid();
         List<CardData> shuffledPool = await ShuffleCards(loadedCards);
         List<CardData> spawnList = new List<CardData>(totalCards);
-
         for (int i = 0; i < pairCount; i++)
         {
             spawnList.Add(shuffledPool[i]);
             spawnList.Add(shuffledPool[i]);
         }
-        loadingText.text = "Loading 40%";
+        print($"Total Cards to spawn: {spawnList.Count}");
+        Services.Get<LoadingService>().UpdateLoadingProgress("Spawning cards...");
         spawnList = await ShuffleCards(spawnList);
         for (int i = 0; i < spawnList.Count; i++)
         {
+
             token.ThrowIfCancellationRequested();
-
             float progress = (i + 1f) / spawnList.Count * 100f;
-            loadingText.text = $"Loading {progress:0}%";
-
-            var handle = Addressables.InstantiateAsync(cardPrefabAddressbleName, transform);
-            GameObject cardObj = await handle.ToUniTask(cancellationToken: token);
-
+            Services.Get<LoadingService>().UpdateLoadingProgress($"Spawning cards... {progress:0}%");
+            var cardObj = await Addressables.InstantiateAsync(cardPrefabAddressbleName, transform).ToUniTask(cancellationToken: token);
             cardObj.GetComponent<Card>().SetCardData(spawnList[i]);
-
             await UniTask.Yield();
         }
+    }
+
+
+    private void PrepareGrid()
+    {
+        int totalCards = CurrentLevelcards;
+        int gridCount = Mathf.CeilToInt(Mathf.Sqrt(totalCards));
+        float totalSpacing = (gridCount - 1) * 10f;
+        float availableSize = 1000 - totalSpacing;
+        float cellSize = availableSize / gridCount;
+        gridLayoutGroup.cellSize = new Vector2(cellSize, cellSize);
     }
 
 }

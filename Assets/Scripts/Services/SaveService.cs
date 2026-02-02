@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SaveService : BaseService
+public class SaveService : MonoBehaviour
 {
     private void Awake()
     {
-        Init();
+        Services.Register<SaveService>(this);
     }
 }

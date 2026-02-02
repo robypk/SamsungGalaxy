@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioService : BaseService
+public class AudioService : MonoBehaviour
 {
     private void Awake()
     {
-        Init();
+        Services.Register<AudioService>(this);
     }
 
 }

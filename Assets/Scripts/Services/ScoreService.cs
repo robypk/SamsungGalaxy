@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScoreService : BaseService
+public class ScoreService : MonoBehaviour
 {
 
     private void Awake()
     {
-        Init();
+        Services.Register<ScoreService>(this);  
     }
 }
