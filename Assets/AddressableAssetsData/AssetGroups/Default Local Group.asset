@@ -1260,6 +1260,10 @@ MonoBehaviour:
     m_Address: LevelButton
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 87015865d13d44940b4d7ece17410b9d
+    m_Address: ScoreCard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 15a4492f80a4de347b5b01f6c47dd1ca, type: 2}
   m_SchemaSet:
