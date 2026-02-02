@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -15,12 +16,53 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject mainMenu;
     [SerializeField] GameObject gamePlayUI;
     string cardsAddressableLabel = "Cards";
-
     int currentLevelCards = 1;
+
+    private Queue<Card> selectedCards = new Queue<Card>();
+
+
 
     public async UniTaskVoid Start( )
     {
         await InitializeGameAsync();
+        Services.Get<EventService>().CardClick += onCardClick;
+    }
+
+    private void onCardClick(Card card)
+    {
+        CheckMatching(card).Forget();
+
+    }
+
+    private async UniTask CheckMatching(Card card)
+    {
+        selectedCards.Enqueue(card);
+        if (selectedCards.Count < 2)
+        {
+            return;
+        }
+        Card firstCard = selectedCards.Dequeue();
+        Card secondCard = selectedCards.Dequeue();
+        if (firstCard.GetCardData().CardId == secondCard.GetCardData().CardId)
+        {
+            await UniTask.Delay(1000);
+            firstCard.gameObject.GetComponent<Image>().enabled = false;
+            firstCard.gameObject.GetComponent<Button>().enabled = false;
+
+            secondCard.gameObject.GetComponent<Image>().enabled = false;
+            secondCard.gameObject.GetComponent<Button>().enabled = false;
+        }
+        else
+        {
+            await UniTask.Delay(1000);
+            firstCard.FlipBackCardAsync().Forget();
+            secondCard.FlipBackCardAsync().Forget();
+
+        }
+    }
+    public void hitButtonClick() 
+    {  
+        Services.Get<EventService>().hitClick?.Invoke();
     }
 
     public async UniTask InitializeGameAsync( )
@@ -60,6 +102,11 @@ public class GameManager : MonoBehaviour
     }
 
 
-
+    public void StartGame( )
+    {
+        mainMenu.SetActive(false);
+        gamePlayUI.SetActive(true);
+        cardSpawner.StartCardSpawning();
+    }
 
 }

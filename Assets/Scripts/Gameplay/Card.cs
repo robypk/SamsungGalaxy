@@ -1,4 +1,6 @@
+using System.Threading;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +8,6 @@ public class Card : MonoBehaviour
 {
     [SerializeField] private Image cardImage;
     private Sprite cardBackImage;
-
     private CardData cardData;
     private Button cardButton;
 
@@ -17,6 +18,14 @@ public class Card : MonoBehaviour
         cardBackImage = cardImage.sprite;
     }
 
+    private void OnEnable()
+    {
+        Services.Get<EventService>().hitClick += hitClicked;
+    }
+    private void OnDisable()
+    {
+        Services.Get<EventService>().hitClick -= hitClicked;
+    }
     private void OnDestroy()
     {
         cardButton.onClick.RemoveListener(OnCardClicked);
@@ -27,6 +36,11 @@ public class Card : MonoBehaviour
         cardData = data;
         Init();
     }
+
+    public CardData GetCardData()
+    {
+        return cardData;
+    }
     private void Init()
     {
         cardImage.sprite = cardBackImage;
@@ -36,13 +50,37 @@ public class Card : MonoBehaviour
     private void OnCardClicked()
     {
         ShowCardAsync().Forget();
+        Services.Get<EventService>().CardClick?.Invoke(this);
     }
+
+    private void hitClicked()
+    {
+       hintRequired().Forget();
+    }
+
+    private async UniTask hintRequired()
+    {
+        await ShowCardAsync();
+        await UniTask.Delay(4000);
+        await FlipBackCardAsync();
+    }
+
+
 
     public async UniTask ShowCardAsync()
     {
         cardButton.interactable = false;
         await LeanTweenScaleXAsync(0f, 0.15f);
         cardImage.sprite = cardData.CardImage;
+        await LeanTweenScaleXAsync(1f, 0.15f);
+        cardButton.interactable = true;
+    }
+
+    public async UniTask FlipBackCardAsync()
+    {
+        cardButton.interactable = false;
+        await LeanTweenScaleXAsync(0f, 0.15f);
+        cardImage.sprite = cardBackImage;
         await LeanTweenScaleXAsync(1f, 0.15f);
         cardButton.interactable = true;
     }
