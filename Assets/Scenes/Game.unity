@@ -3028,6 +3028,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d3bc859b20633478c1851215cf5ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSource: {fileID: 1671526232}
+  buttonClick: {fileID: 8300000, guid: 45844043a25e36e4eb7ac0989ce98c48, type: 3}
+  correct: {fileID: 8300000, guid: 7f61a6d01fcaf454f9ca0bd3be855a95, type: 3}
+  wrong: {fileID: 8300000, guid: a390daf3b13fe1e4498944774662c3fd, type: 3}
+  levelComplete: {fileID: 8300000, guid: 13459e412392cdc4ab2cb8a267c99a74, type: 3}
 --- !u!1 &1631855928
 GameObject:
   m_ObjectHideFlags: 0
@@ -3400,7 +3405,7 @@ AudioSource:
   m_GameObject: {fileID: 1671526230}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 3167634235172592098, guid: 5e6c011145c9d70439f690c983b9f06b, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -4576,12 +4581,12 @@ AudioSource:
   m_GameObject: {fileID: 2119130884}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -7277005487254046978, guid: 5e6c011145c9d70439f690c983b9f06b, type: 2}
+  m_audioClip: {fileID: 8300000, guid: fd75ba0db135da347b3a6cb8539b47d2, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.15
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

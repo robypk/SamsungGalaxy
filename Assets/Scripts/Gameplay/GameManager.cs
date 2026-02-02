@@ -58,9 +58,11 @@ public class GameManager : MonoBehaviour
             secondCard.ClearCard();
             currentScore++;
             scoreText.text = currentScore.ToString();
+            Services.Get<AudioService>().PlayCorrect();
             if (currentScore == currentlevel)
             {
                 await UniTask.Delay(2000);
+                Services.Get<AudioService>().PlayLevelComplete();
                 Services.Get<EventService>().LevelComplete?.Invoke();
                 mainMenu.SetActive(true);
                 gamePlayUI.SetActive(false);
@@ -71,7 +73,8 @@ public class GameManager : MonoBehaviour
             await UniTask.Delay(1000);
             firstCard.FlipBackCardAsync().Forget();
             secondCard.FlipBackCardAsync().Forget();
-  
+            Services.Get<AudioService>().PlayWrong();
+
 
         }
         currentTurn++;
@@ -106,7 +109,8 @@ public class GameManager : MonoBehaviour
                 currentLevelCards = levelIndex *2;
                 cardSpawner.SetCurrentLevel(currentLevelCards);
                 currentlevel = levelIndex;
-                selectedLevelText.text =levelIndex.ToString();
+                selectedLevelText.text = levelIndex.ToString();
+                Services.Get<AudioService>().ButtonClick();
 
             });
             Services.Get<LoadingService>().UpdateLoadingProgress($"Spawning Levels... {(i / (float)totalLevles) * 100f:0}%");
