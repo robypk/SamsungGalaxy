@@ -41,6 +41,7 @@ public class CardSpawner : MonoBehaviour
         await SpawnCardsAsync(CurrentLevelcards);
         Services.Get<LoadingService>().UpdateLoadingProgress("Finalizing...");
         Services.Get<LoadingService>().HideLoadingScreen();
+        Services.Get<EventService>().HintRequested?.Invoke();
     }
     private async UniTask<List<CardData>> ShuffleCards(List<CardData> cards)
     {

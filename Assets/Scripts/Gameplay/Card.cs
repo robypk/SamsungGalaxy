@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting.Antlr3.Runtime;
@@ -20,15 +21,29 @@ public class Card : MonoBehaviour
 
     private void OnEnable()
     {
-        Services.Get<EventService>().hitClick += hitClicked;
+        Services.Get<EventService>().HintRequested += hitClicked;
+        Services.Get<EventService>().LevelComplete += DestroyCard;
     }
+
+    private void DestroyCard()
+    {
+        Destroy(gameObject);
+    }
+
     private void OnDisable()
     {
-        Services.Get<EventService>().hitClick -= hitClicked;
+        Services.Get<EventService>().HintRequested -= hitClicked;
+        Services.Get<EventService>().LevelComplete -= DestroyCard;
     }
     private void OnDestroy()
     {
         cardButton.onClick.RemoveListener(OnCardClicked);
+    }
+
+    public void ClearCard()
+    {
+        cardImage.enabled = false;
+        cardButton.enabled = false;
     }
 
     public void SetCardData(CardData data)
@@ -73,12 +88,10 @@ public class Card : MonoBehaviour
         await LeanTweenScaleXAsync(0f, 0.15f);
         cardImage.sprite = cardData.CardImage;
         await LeanTweenScaleXAsync(1f, 0.15f);
-        cardButton.interactable = true;
     }
 
     public async UniTask FlipBackCardAsync()
     {
-        cardButton.interactable = false;
         await LeanTweenScaleXAsync(0f, 0.15f);
         cardImage.sprite = cardBackImage;
         await LeanTweenScaleXAsync(1f, 0.15f);

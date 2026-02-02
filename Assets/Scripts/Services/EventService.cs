@@ -7,7 +7,8 @@ public class EventService : MonoBehaviour
 {
 
     public Action <Card> CardClick;
-    public Action  hitClick;
+    public Action  HintRequested;
+    public Action LevelComplete;
     private void Awake()
     {
         Services.Register<EventService>(this);
